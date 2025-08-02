@@ -31,7 +31,7 @@ const SignIn = () => {
       if (!res.ok) {
         throw new Error(data.message || 'Gagal masuk, silakan coba lagi.');
       }
-      // Redirect
+      // lanjut ke profile
       router.push('/profile');
     } catch (err) {
       setError(err.message);
