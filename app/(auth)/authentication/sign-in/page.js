@@ -1,41 +1,78 @@
 'use client'
 
-// import node module libraries
-import { Row, Col, Card, Form, Button, Image } from 'react-bootstrap';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Row, Col, Card, Form, Button, Image, Alert, Spinner } from 'react-bootstrap';
 import Link from 'next/link';
-
-// import hooks
 import useMounted from 'hooks/useMounted';
 
 const SignIn = () => {
   const hasMounted = useMounted();
+  const router = useRouter();
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('https://api.escuelajs.co/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Gagal masuk, silakan coba lagi.');
+      }
+      // Redirect
+      router.push('/profile');
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <Row className="align-items-center justify-content-center g-0 min-vh-100">
       <Col xxl={4} lg={6} md={8} xs={12} className="py-8 py-xl-0">
-        {/* Card */}
         <Card className="smooth-shadow-md">
-          {/* Card body */}
           <Card.Body className="p-6">
             <div className="mb-4">
               <Link href="/"><Image src="/images/brand/logo/logo-primary.svg" className="mb-2" alt="" /></Link>
               <p className="mb-6">Please enter your user information.</p>
             </div>
-            {/* Form */}
             {hasMounted &&
-              <Form>
-                {/* Username */}
-                <Form.Group className="mb-3" controlId="username">
-                  <Form.Label>Username or email</Form.Label>
-                  <Form.Control type="email" name="username" placeholder="Enter address here" required="" />
+              <Form onSubmit={handleSubmit}>
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form.Group className="mb-3" controlId="email">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    placeholder="Enter address here"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
-
-                {/* Password */}
                 <Form.Group className="mb-3" controlId="password">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" name="password" placeholder="**************" required="" />
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    placeholder="**************"
+                    required
+                    value={form.password}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
-
-                {/* Checkbox */}
                 <div className="d-lg-flex justify-content-between align-items-center mb-4">
                   <Form.Check type="checkbox" id="rememberme">
                     <Form.Check.Input type="checkbox" />
@@ -43,9 +80,10 @@ const SignIn = () => {
                   </Form.Check>
                 </div>
                 <div>
-                  {/* Button */}
                   <div className="d-grid">
-                    <Button variant="primary" type="submit">Sign In</Button>
+                    <Button variant="primary" type="submit" disabled={loading}>
+                      {loading ? <Spinner animation="border" size="sm" /> : 'Sign In'}
+                    </Button>
                   </div>
                   <div className="d-md-flex justify-content-between mt-4">
                     <div className="mb-2 mb-md-0">
@@ -56,15 +94,13 @@ const SignIn = () => {
                     </div>
                   </div>
                 </div>
-              </Form>}
-
-
+              </Form>
+            }
           </Card.Body>
         </Card>
       </Col>
     </Row>
-  )
-}
+  );
+};
 
-
-export default SignIn
+export default SignIn;
