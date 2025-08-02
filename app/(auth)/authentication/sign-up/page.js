@@ -16,7 +16,7 @@ const SignUp = () => {
     confirmPassword: ''
   });
 
-  // Ganti dengan token asli yang kamu punya
+  
   const REFRESH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjc0NDk0MDI4fQ.kCak9sLJr74frSRVQp0_27BY4iBCgQSmoT3vQVWKzJg';
 
   const handleChange = (e) => {
@@ -29,7 +29,6 @@ const SignUp = () => {
     setProfile(null);
 
     try {
-      // 1. Hit refresh token API
       const tokenRes = await fetch('https://api.escuelajs.co/api/v1/auth/refresh-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,7 +40,6 @@ const SignUp = () => {
       const tokenData = await tokenRes.json();
       const accessToken = tokenData.access_token;
 
-      // 2. Hit profile API
       const profileRes = await fetch('https://api.escuelajs.co/api/v1/auth/profile', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -69,31 +67,26 @@ const SignUp = () => {
 
             {hasMounted &&
               <Form onSubmit={handleSubmit}>
-                {/* Username */}
                 <Form.Group className="mb-3" controlId="username">
                   <Form.Label>Username</Form.Label>
                   <Form.Control type="text" name="username" placeholder="User Name" required onChange={handleChange} />
                 </Form.Group>
 
-                {/* Email */}
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Email</Form.Label>
                   <Form.Control type="email" name="email" placeholder="Enter address here" required onChange={handleChange} />
                 </Form.Group>
 
-                {/* Password */}
                 <Form.Group className="mb-3" controlId="password">
                   <Form.Label>Password</Form.Label>
                   <Form.Control type="password" name="password" placeholder="**************" required onChange={handleChange} />
                 </Form.Group>
 
-                {/* Confirm Password */}
                 <Form.Group className="mb-3" controlId="confirm-password">
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control type="password" name="confirmPassword" placeholder="**************" required onChange={handleChange} />
                 </Form.Group>
 
-                {/* Checkbox */}
                 <div className="mb-3">
                   <Form.Check type="checkbox" id="check-api-checkbox">
                     <Form.Check.Input type="checkbox" />
@@ -103,7 +96,6 @@ const SignUp = () => {
                   </Form.Check>
                 </div>
 
-                {/* Submit */}
                 <div className="d-grid">
                   <Button variant="primary" type="submit">Create Free Account</Button>
                 </div>
@@ -117,7 +109,6 @@ const SignUp = () => {
                   </div>
                 </div>
 
-                {/* Feedback */}
                 {error && <div className="mt-3 text-danger">{error}</div>}
                 {profile && (
                   <div className="mt-3">
