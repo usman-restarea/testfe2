@@ -17,7 +17,7 @@ const SignUp = () => {
   });
 
   // Ganti dengan token asli yang kamu punya
-  const REFRESH_TOKEN = 'YOUR_REFRESH_TOKEN_DI_SINI';
+  const REFRESH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjc0NDk0MDI4fQ.kCak9sLJr74frSRVQp0_27BY4iBCgQSmoT3vQVWKzJg';
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,8 +33,7 @@ const SignUp = () => {
       const tokenRes = await fetch('https://api.escuelajs.co/api/v1/auth/refresh-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ refreshToken:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTY3Mjc2NjAyOCwiZXhwIjoxNjc0NDk0MDI4fQ.kCak9sLJr74frSRVQp0_27BY4iBCgQSmoT3vQVWKzJg",
- })
+        body: JSON.stringify({ refreshToken: REFRESH_TOKEN })
       });
 
       if (!tokenRes.ok) throw new Error('Gagal mendapatkan access token');
