@@ -5,7 +5,9 @@ import { Col, Card, Dropdown, Image } from 'react-bootstrap';
 import { MoreVertical } from 'react-feather';
 
 // import required data files
-import ProjectsContributionsData from 'data/profile/ProjectsContributionsData';
+import ProjectsContributionsDataRaw from 'data/profile/ProjectsContributionsData';
+
+const ProjectsContributionsData = Array.isArray(ProjectsContributionsDataRaw) ? ProjectsContributionsDataRaw : [];
 
 const ProjectsContributions = () => {
 

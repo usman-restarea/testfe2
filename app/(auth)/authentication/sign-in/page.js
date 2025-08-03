@@ -21,21 +21,29 @@ const SignIn = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
       const res = await fetch('https://api.escuelajs.co/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: form.email, password: form.password }),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         throw new Error(data.message || 'Gagal masuk, silakan coba lagi.');
       }
-      // lanjut ke profile
-      router.push('/profile');
+
+      // ✅ Simpan token ke localStorage
+      localStorage.setItem('token', data.access_token);
+
+      // ✅ Arahkan ke halaman utama setelah login berhasil
+      router.push('/');
     } catch (err) {
       setError(err.message);
     }
+
     setLoading(false);
   };
 
@@ -45,12 +53,16 @@ const SignIn = () => {
         <Card className="smooth-shadow-md">
           <Card.Body className="p-6">
             <div className="mb-4">
-              <Link href="/"><Image src="/images/brand/logo/logo-primary.svg" className="mb-2" alt="" /></Link>
+              <Link href="/">
+                <Image src="/images/brand/logo/logo-primary.svg" className="mb-2" alt="Logo" />
+              </Link>
               <p className="mb-6">Please enter your user information.</p>
             </div>
-            {hasMounted &&
+
+            {hasMounted && (
               <Form onSubmit={handleSubmit}>
                 {error && <Alert variant="danger">{error}</Alert>}
+
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
@@ -62,6 +74,7 @@ const SignIn = () => {
                     onChange={handleChange}
                   />
                 </Form.Group>
+
                 <Form.Group className="mb-3" controlId="password">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
@@ -73,29 +86,36 @@ const SignIn = () => {
                     onChange={handleChange}
                   />
                 </Form.Group>
+
                 <div className="d-lg-flex justify-content-between align-items-center mb-4">
                   <Form.Check type="checkbox" id="rememberme">
                     <Form.Check.Input type="checkbox" />
                     <Form.Check.Label>Remember me</Form.Check.Label>
                   </Form.Check>
                 </div>
+
                 <div>
                   <div className="d-grid">
                     <Button variant="primary" type="submit" disabled={loading}>
                       {loading ? <Spinner animation="border" size="sm" /> : 'Sign In'}
                     </Button>
                   </div>
+
                   <div className="d-md-flex justify-content-between mt-4">
                     <div className="mb-2 mb-md-0">
-                      <Link href="/authentication/sign-up" className="fs-5">Create An Account </Link>
+                      <Link href="/authentication/sign-up" className="fs-5">
+                        Create An Account
+                      </Link>
                     </div>
                     <div>
-                      <Link href="/authentication/forget-password" className="text-inherit fs-5">Forgot your password?</Link>
+                      <Link href="/authentication/forget-password" className="text-inherit fs-5">
+                        Forgot your password?
+                      </Link>
                     </div>
                   </div>
                 </div>
               </Form>
-            }
+            )}
           </Card.Body>
         </Card>
       </Col>
